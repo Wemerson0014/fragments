@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.estudo.fragments.model.Character
+import kotlinx.android.synthetic.main.fragment_detail.view.*
 
 class CharacterDetailFragment: Fragment() {
 
@@ -17,6 +19,14 @@ class CharacterDetailFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_detail, container, false)
+        val view = inflater.inflate(R.layout.fragment_detail, container, false)
+
+        val character = arguments?.getSerializable("detail") as Character
+
+        view.image.setImageResource(character.imageResId)
+        view.name.text = character.name
+        view.description.text = character.description
+
+        return view
     }
 }
