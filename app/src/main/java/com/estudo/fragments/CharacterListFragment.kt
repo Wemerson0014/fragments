@@ -14,12 +14,14 @@ import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_detail.view.*
 import kotlinx.android.synthetic.main.fragment_list.view.*
 import kotlinx.android.synthetic.main.item_list.view.*
+import java.lang.ClassCastException
 
 class CharacterListFragment: Fragment() {
 
     private lateinit var names: Array<String>
     private lateinit var descriptions: Array<String>
     private lateinit var imageResIds: IntArray
+    private lateinit var listener : OnListSelected
 
     companion object {
         fun newInstance() = CharacterListFragment()
@@ -53,11 +55,14 @@ class CharacterListFragment: Fragment() {
             imageResIds[i] = typedArray.getResourceId(i, 0)
         }
         typedArray.recycle()
+        if (context is OnListSelected) {
+            listener = context
+        } else {
+            throw ClassCastException(context.toString() + getString(R.string.warning))
+        }
     }
 
     internal inner class CharacterListAdapter : RecyclerView.Adapter<CharacterListAdapter.ViewHolder>() {
-
-
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ViewHolder(
@@ -71,6 +76,9 @@ class CharacterListFragment: Fragment() {
                 imageResIds[position]
             )
             holder.bind(character)
+            holder.itemView.setOnClickListener {
+                listener.onSelected(character)
+            }
         }
 
         override fun getItemCount(): Int = names.size
@@ -82,5 +90,9 @@ class CharacterListFragment: Fragment() {
                 itemView.list_name.text = character.name
             }
         }
+    }
+
+    interface OnListSelected {
+        fun onSelected(character: Character)
     }
 }
