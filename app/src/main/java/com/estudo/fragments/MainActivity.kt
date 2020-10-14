@@ -18,6 +18,16 @@ class MainActivity : AppCompatActivity(), CharacterListFragment.OnListSelected {
     }
 
     override fun onSelected(character: Character) {
-        println(character)
+        val args = Bundle()
+        args.putSerializable("detail", character)
+
+        val fragment = CharacterDetailFragment.newInstance()
+        fragment.arguments = args
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container_root, fragment, "fragmentDetail")
+            .addToBackStack(null)
+            .commit()
     }
 }
